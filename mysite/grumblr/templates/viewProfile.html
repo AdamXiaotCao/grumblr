@@ -1,0 +1,161 @@
+<!DOCTYPE HTML>
+{%extends "base.html"%}
+	{% load staticfiles %}
+
+
+
+{%block body%}
+
+
+	<div class = "container-fluid">
+		<div class= "row">
+			<div class = "col-md-1 ">
+<!-- 			<a class="manage" href="logout">logout</a>
+			<a class="manage" href="/grumblr/edit-profile">edit profile</a>  -->
+	
+			</div>
+			<div class= "col-md-1 userName"> 
+				 <h4 class="masthead-brand">{{target_person.first_name}} {{target_person.last_name}} </h4>
+				 
+			</div>
+			<div class= "col-md-1 userName"> 
+			
+			{% if user != target_person.user %}
+                
+                {% if target_person in all_followers %}
+                <form action= "{%url 'unfollow' target_person.id%}" method="post">
+                    <button type="submit" class="btn btn-info btn-xs" > unfollow-</button>
+                    <input type="hidden" name ="page" value="viewProfile.html"/>
+                    <input type="hidden" name ="target_person" value="{{target_person}}"/>
+                    {% csrf_token %}
+                 </form>
+                {% else %}
+                <form action= "{%url 'follow' target_person.id%}" method="post">
+                <button type="submit" class="btn btn-info btn-xs" > follow+</button>
+                {% endif %}
+                <input type="hidden" name ="page" value="viewProfile.html"/>
+                <input type="hidden" name ="target_person" value="{{target_person}}"/>
+				{% csrf_token %}
+                </form>
+             
+                {% if target_person in all_blocks %}
+                   <form action= "{%url 'unblock' target_person.id%}" method="post">
+                    <button type="submit" class="btn btn-danger btn-xs" > unblock</button>
+                    <input type="hidden" name ="page" value="viewProfile.html"/>
+                    <input type="hidden" name ="target_person" value="{{target_person}}"/>
+                    {% csrf_token %}
+                   </form>
+                {% else %}
+                   <form action= "{%url 'block' target_person.id%}" method="post">
+                    <button tpye="submit" class="btn btn-danger btn-xs"> block</button>
+                {% endif %}
+                <input type="hidden" name ="page" value="viewProfile.html"/>
+                <input type="hidden" name ="target_person" value="{{target_person}}"/>
+				{% csrf_token %}
+                </form>
+            {%endif%}
+
+
+			</div>
+		</div>
+		
+		<div class= "row">
+			<div class = "col-md-1">
+			</div>
+			<div class ="col-md-2">
+			{% if target_person.picture %}
+                <img src="{% url 'photo' target_user.id%}" alt="{{form.first_name.value}} {{form.last_name.value}}" width="200px">
+			{% endif %}
+			</div>
+			<div class= "col-md-6" id= "stream">
+					<h5 class ="text-center"> Recent grumbl</h5>
+					<div class ="row">
+						<div class = "col-md-3">
+
+						</div>
+						<div class = "col-md-6">
+							<h6> {{target_person.name}}:</h6>
+								{% for grumbl in mygrumbls %}
+								<div class ="grumbl">
+									{{grumbl.text}}  				
+								</div>
+
+						
+						
+								<div class = "date">
+									 {{grumbl.date}} 
+								</div>
+								<div> <form action="{%url 'dislike' grumbl.id%}" method ="post">
+					      		<input type="hidden" name ="dislike_page" value="viewProfile.html"/>
+						  		<button type= "submit" class="btn btn-primary btn-xs">dislike 
+
+						  
+
+						  		</button>	
+						  		<input type="hidden" name ="page" value="viewProfile.html"/>
+						  		<input type="hidden" name ="target_person" value="{{target_person.id}}"/>
+
+						  	({{grumbl.dislikes.count}})
+								{% csrf_token %}
+								</form>
+								<div class = "col-md-4" >
+
+							{% for comment in grumbl.comments.all%}
+								<div class= "row">
+									{{grumbl.target_person.first_name}} : {{comment.text}} 
+								</div>
+							{% endfor%}
+							</div>
+						
+						&nbsp
+						&nbsp
+						&nbsp 
+						<form class="form-inline" role="form" method="post" action= "{%url 'comment' grumbl.id %}" >
+						<div class ="row">
+						<textarea class="form-control" type="text" rows="1" cols = "30"  name ="text" ></textarea>
+						</div>
+						<input type="hidden" name="page" value="viewProfile.html" />
+						<button type="submit" class="btn btn-default btn-xs">comment</button>
+
+						{% csrf_token %}
+						</form>
+							&nbsp &nbsp  &nbsp 
+							</div>
+								<br>
+								<br>
+								{% endfor %}
+						</div>
+
+					</div>
+				</div>
+			
+		</div>
+
+
+
+	</div>
+<!-- get user profile information -->
+		<div class = "row">
+			<div class= "col-md-1"></div>
+			<div class= "col-md-2" id="myGrumbl">
+				<h5 class= "text-center"> Following:</h5>
+				<br>
+					<div class= "row">
+				
+						<div >
+							 Name: {{target_person.first_name}} {{target_person.last_name}} 				
+						</div>
+
+						<div >
+							Description: {{target_person.description}} 
+						</div>
+			
+					</div>
+				</div>
+				<div class="col-md-1">
+				</div>
+				
+			</div>
+		</div>
+</body>
+{%endblock%}

@@ -1,0 +1,70 @@
+<html>
+<Head>
+	{% load staticfiles %}
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href= "{%static "css/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{%static "css/mycss.css" %}" rel="stylesheet">	 
+	<script src ="{%static "js/bootstrap.min.js" %}"></script> 
+
+</Head>
+
+
+<div class="container-fluid">
+
+	<div class="row">
+	
+	  <div class="col-md-1"><a href= "/grumblr/">  <h3 class="masthead-brand">grumblr</h3></a> 
+
+	  </div>
+
+	  <br>
+
+	  <div class= "col-md-7">
+
+	  </div>
+	  {%block search%}
+	  <div class="col-md-3">
+		<form class="form-inline" role="form" action="{% url 'search' %}">
+
+		  <div class="form-group">
+		    <input type="search" class="form-control" id="exampleInputEmail2" placeholder="Search" name="target">
+		  </div>
+		 <button type="submit" class="btn btn-default btn-sm">
+			  <span class="glyphicon glyphicon-search"></span>
+		</button>
+		{% csrf_token %}
+		</form>
+	  </div>
+	  {%endblock%}
+	</div>
+
+	<br>
+	<br>
+	<br>
+
+
+		<div class= "row">
+			{%block logout%}
+			<div class = "col-md-1 ">
+			<a class="manage" href="{%url 'logout'%}"> logout </a>
+			<a class="manage" method = "get" href="{%url 'edit' person.id%}">edit profile</a>
+			<a class="manage" method = "get" href="{%url 'change_password' person.user.id%}">change password</a>		
+			</div>
+
+
+			{%endblock%}
+		</div>
+
+
+</div>
+
+{%block body%}
+<body>
+</body>
+{%endblock%}
+	<script src ="{%static "js/jquery-1.11.1.min.js" %}"></script> 
+	<script src ="{%static "js/grumblr.js" %}"></script> 
+</html>

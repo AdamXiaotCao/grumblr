@@ -1,0 +1,200 @@
+<!DOCTYPE HTML>
+{%extends "base.html" %}
+
+	{% load staticfiles %}
+
+
+
+{%block body%}
+
+
+	<div class= "container-fluid">
+
+			<div class = "col-md-1">
+			</div>
+			<div class= "col-md-2 userName"> 
+				<a href= "{%url 'view' user.id %}">  <h4 class="masthead-brand">{{person.first_name}} {{person.last_name }}</h4> </a> 
+			</div>
+		</div>
+		<div class= "row placeholders">
+			<div class = "col-md-1">
+			</div>
+			<div class ="col-md-2">
+			{% if person.picture %}
+				<img src="{% url 'photo' person.user.id %}" alt="{{form.first_name.value}} {{form.last_name.value}}" width="200px">
+			{% endif %}
+			</div>
+			<div class= "col-md-7" id="myGrumbl">
+				<h5 class= "text-center"> My grumbl:</h5>
+				<div class = "col-md-2" id="allMyGrumbl">
+				{% for mygrumbl in mygrumbls%}
+
+		
+
+						<div class ="grumbl">
+							 <a href="{%url 'delete' mygrumbl.id%}">X</a> {{mygrumbl.text}}	
+							 {% if mygrumbl.picture %}
+							 	<img src="{% url 'grumbl_photo' mygrumbl.id %}" alt="{{mygrumbl.id}}" width="50px">
+							 {% endif %}			
+						</div>
+
+						<div class = "date">
+							<p class ="date"> {{mygrumbl.date}}</p> 
+						</div>
+						<div> <form action="{%url 'dislike' mygrumbl.id%}" method ="post">
+					      <input type="hidden" name ="page" value="stream.html"/>
+						  <button type= "submit" class="btn btn-primary btn-xs" >dislike 
+						  
+
+						  </button>
+
+						  	({{mygrumbl.dislikes.count}})
+						{% csrf_token %}
+						&nbsp &nbsp  &nbsp 
+						</div>
+
+						</form>
+						<div class = "row" id = "all_comments">
+
+							{% for comment in mygrumbl.comments.all%}
+							<div class= "row">
+							{{mygrumbl.person.first_name}} : {{comment.text}} 
+							</div>
+							{% endfor%}
+						</div>
+			
+						
+						&nbsp
+						&nbsp
+						&nbsp 
+				
+						<div class ="row">
+						<textarea  type="text" rows="1" cols = "30" id="comment_content" name ="comment_text" ></textarea>
+
+
+						</div>
+						<input type="hidden" name="page" value="stream.html" />
+						<input type="hidden" name="user" value="{{person.user}}"/>
+						<input type="hidden" name="id" value = "{{mygrumbl.id}}"/>
+						<button onclick="sendComment({{mygrumbl.id}},'stream.html',{{person.id}},'{{person.first_name}}')" type="submit" name="comment" class="btn btn-default btn-xs">comment</button>
+						</div>
+					
+					</div>
+				
+					
+					</div>
+					</div>
+
+						
+					<br>
+					</div>
+					{% endfor %}
+					</div>
+					<div class = "col-md-4">
+					</div>
+					<div class = "col-md-3">
+					<form enctype="multipart/form-data" role="form" method="post" action="{% url 'add' %}">
+					{% for field in form.visible_fields %}
+					<div class = "form-group">
+						<div class= "row">
+							<div class="col-md-2">
+		 					<p class="field">{{field}} </p>
+		   					{{field.errors}}
+		  					</div>
+		  				</div>
+		  			</div>
+		  			{% endfor %}
+		  			 <button type="submit" class="btn btn-success">Post</button>
+		  			 {%csrf_token%}
+		  			 </form>
+		  			 </div>
+			</div>
+
+		</div>
+		<br>
+		<div class = "row">
+			<div class= "col-md-1"></div>
+
+		</div>
+				<br>
+	
+		<div class= "col-md-1"></div>
+
+		<div class= "col-md-2">
+				
+				
+		</div>
+	
+
+				<div class="col-md-1">
+				</div>
+				<div class= "col-md-4" id= "stream">
+					<h5 class ="text-center"> Follower Stream: </h5>
+				
+			
+						 {% for followergrumbl in followersgrumbls %} 
+
+						<form action ="{%url 'view' followergrumbl.person.user.id%}" method="post">
+						 <a href="{%url 'view' followergrumbl.person.user.id%}">	{{followergrumbl.person.first_name}} {{followergrumbl.person.last_name}} </a>
+						 {% csrf_token %}
+						 </form>
+							<div class = "grubml">
+								 {{followergrumbl.text}}
+							  {% if followergrumbl.picture %}
+							 	<img src="{% url 'grumbl_photo' followergrumbl.id %}" alt="{{mygrumbl.id}}" width="50px">
+							 {% endif %}
+							</div>
+							<div> <form action="{%url 'dislike' followergrumbl.id%}" method ="post">
+					    	  <input type="hidden" name ="page" id="page" value="stream.html"/>
+						 	 <button type= "submit" class="btn btn-primary btn-xs">dislike 
+						  
+
+						  </button>
+
+						  	({{followergrumbl.dislikes.count}})
+				
+						&nbsp &nbsp  &nbsp 
+							</div>
+							<div class = "date"> {{followergrumbl.date}}</div>
+							<div class = "col-md-4" id= "all_comments">
+
+								{% for comment in followergrumbl.comments.all%}
+								<div class= "row">
+								{{comment.person_name}} : {{comment.text}} 
+								</div>
+								{% endfor%}
+							</div>
+
+						<div class ="row">
+						<textarea  type="text" rows="1" cols = "30" id="comment_content" name ="comment_text" ></textarea>
+
+
+						</div>
+						<input type="hidden" name="page" value="stream.html" />
+						<input type="hidden" name="user" value="{{followergrumbl.person.user}}"/>
+						<input type="hidden" name="id" value = "{{followergrumbl.id}}"/>
+						<button onclick="sendComment({{followergrumbl.id}},'stream.html',{{followergrumbl.id}},'{{followergrumbl.first_name}}')" type="submit" name="comment" class="btn btn-default btn-xs">comment</button>
+						</div>
+							<br>
+							<br>
+						
+						
+						{% endfor %}
+					
+						</div>
+				</div>
+				<div class= "col-md-4" id= "stream">
+					<h5 class ="text-center"> People you might want to follow: </h5>
+					{%for person in people%}
+					<div class = "row">
+						<a href= "{%url 'view' person.user.id %}">  <h4 class="masthead-brand">{{person.first_name}} {{person.last_name }}</h4> </a> 
+
+					</div> 
+						{%endfor%}
+				</div>
+							
+						
+	
+
+
+{%endblock%}

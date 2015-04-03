@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+{%extends "base.html"%}
+
+{% load staticfiles %}
+{%block body%}		
+
+	<div class = "container-fluid">
+	
+			<div class= "col-md-1">
+			</div>
+			<div class= "col-md-2"> 
+				<a href= "{% url 'view' person.user.id %}">  <h4 class="masthead-brand">{{person.first_name}} {{person.last_name}}</h4></a> 
+			</div>
+
+
+
+		</div>
+			<div class = "col-md-1">
+			</div>
+			<div class ="col-md-2">
+			{% if form.picture.value %}
+				<img src="{% url 'photo' id %}" alt="{{form.first_name.value}} {{form.last_name.value}}" width="200px">
+			{% endif %}
+		
+				<button type="button" class="btn btn-default">
+  						<span class="glyphicon glyphicon-paperclip"></span> 
+				</button>
+			</div>
+			<div class = "col-md-1">
+			</div>
+			<div class = "col-md-5">
+			<form enctype="multipart/form-data" role="form" action="{% url 'edit' person.id %}" method="post">
+			{% for field in form.visible_fields %}
+				<div class = "form-group">
+					<div class= "row">
+						<div class="col-md-4">
+						{{field.label_tag}}
+						</div>
+						<div class="col-md-2">
+	 					<p class="field">{{field}} </p>
+	   					{{field.errors}}
+	  					</div>
+	  				</div>
+	  			</div>
+	  		{% endfor %}
+
+				<button type="submit" class="btn btn-success">Update</button>
+				{% csrf_token %}
+			</form>
+								
+			</div>
+			
+
+
+		<div class = "row">
+			<div class= "col-md-1"></div>
+			<div class= "col-md-2" id="myGrumbl">
+				<h5 class= "text-center"> Personal Information:</h5>
+				<br>
+					<div class= "row">
+
+						<div >
+							Name: {{person.first_name}} {{person.last_name}} 				
+						</div>
+
+						<div >
+							 Description: {{person.description}}
+						</div>
+					</div>
+				</div>
+				<div class="col-md-1">
+				</div>
+				<div class= "col-md-6" id= "stream">
+					
+				</div>
+			</div>
+	</div>
+
+
+	</div>
+{%endblock%}
